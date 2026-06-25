@@ -42,15 +42,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup").permitAll()
+                    .requestMatchers(
+                        "/", "/index.html", "/login.html", "/signup.html",   // your HTML pages
+                        "/css/**", "/js/**",                                   // styles + scripts
+                        "/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup"
+                ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
+            
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -75,3 +79,4 @@ public class SecurityConfig {
         return source;
     }
 }
+
