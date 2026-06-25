@@ -1,0 +1,113 @@
+/* ============================================================
+   LINKSHRINK — SHARED STYLESHEET (all pages link this one file)
+   Change --accent to rebrand the whole site instantly.
+   ============================================================ */
+
+/* ---- reset ---- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ---- theme tokens ---- */
+:root {
+  --bg: #0a0e27;
+  --bg-secondary: #151932;
+  --accent: #06b6d4;                    /* cyan — change to rebrand */
+  --accent-glow: rgba(6,182,212,0.4);
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --border: #1e293b;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; overflow-x: hidden; min-height: 100vh;
+}
+
+/* ---- ambient glow ---- */
+.glow {
+  position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 50%);
+  opacity: 0.15; pointer-events: none; z-index: -1;
+}
+
+/* ---- navbar (built dynamically by nav.js) ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.5rem 6%;
+  background: rgba(10,14,39,0.8); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border); z-index: 1000;
+}
+.nav-logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text); text-decoration: none; }
+.nav-logo span { color: var(--accent); }
+nav ul { display: flex; list-style: none; gap: 2rem; align-items: center; }
+nav ul li a { color: var(--text-dim); text-decoration: none; font-weight: 500; transition: color 0.3s; cursor: pointer; }
+nav ul li a:hover { color: var(--accent); }
+.pro-badge { background: var(--accent); color: #0a0e27; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; }
+
+/* ---- buttons (shared) ---- */
+.btn-primary, .btn-outline {
+  padding: 0.9rem 2.2rem; border-radius: 8px; text-decoration: none;
+  font-weight: 600; transition: all 0.3s; display: inline-block; cursor: pointer; border: none; font-family: inherit; font-size: 1rem;
+}
+.btn-primary { background: var(--accent); color: #0a0e27; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--accent-glow); }
+.btn-outline { border: 2px solid var(--accent); color: var(--accent); background: transparent; }
+.btn-outline:hover { background: rgba(6,182,212,0.1); }
+.nav-btn { padding: 0.55rem 1.3rem !important; }
+
+/* ---- form group (shared: login, signup, dashboard) ---- */
+.form-group { margin-bottom: 1.3rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text); font-size: 0.95rem; }
+.form-group input {
+  width: 100%; padding: 0.9rem 1rem; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-size: 1rem; font-family: 'DM Sans', sans-serif; transition: border-color 0.3s;
+}
+.form-group input:focus { outline: none; border-color: var(--accent); }
+
+.submit-btn {
+  width: 100%; padding: 1rem; margin-top: 0.5rem; background: var(--accent); color: #0a0e27;
+  border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: 'Syne', sans-serif; transition: all 0.3s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--accent-glow); }
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ---- message toast (shared) ---- */
+.form-message { display: none; margin-top: 1.3rem; padding: 0.9rem; border-radius: 8px; font-weight: 500; text-align: center; font-size: 0.9rem; }
+.form-message.success { background: rgba(34,197,94,0.1); border: 1px solid #22c55e; color: #4ade80; }
+.form-message.error { background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #f87171; }
+
+/* ============================================================
+   PAGE-SPECIFIC SECTIONS (kept in the same file, clearly labeled)
+   ============================================================ */
+
+/* ---- HOME hero ---- */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: 6rem 1.5rem 3rem; max-width: 800px; margin: 0 auto;
+}
+.hero-tag {
+  display: inline-block; padding: 0.5rem 1rem; background: rgba(6,182,212,0.1); border: 1px solid var(--accent);
+  border-radius: 50px; color: var(--accent); font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem;
+}
+.hero h1 { font-family: 'Syne', sans-serif; font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.2rem; }
+.hero h1 .accent { color: var(--accent); }
+.hero p { font-size: 1.15rem; color: var(--text-dim); max-width: 560px; margin-bottom: 2.5rem; }
+.hero .btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+/* ---- AUTH card (login + signup) ---- */
+.auth-wrapper { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 6rem 1.5rem 3rem; }
+.auth-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 420px; }
+.auth-card .label { display: inline-block; color: var(--accent); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 0.5rem; }
+.auth-card h1 { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.auth-card .sub { color: var(--text-dim); margin-bottom: 2rem; font-size: 0.95rem; }
+.auth-foot { text-align: center; margin-top: 1.5rem; color: var(--text-dim); font-size: 0.9rem; }
+.auth-foot a { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+/* ---- responsive ---- */
+@media (max-width: 640px) {
+  .hero h1 { font-size: 2.4rem; }
+  nav ul { gap: 1rem; }
+  nav ul li a { font-size: 0.9rem; }
+}
