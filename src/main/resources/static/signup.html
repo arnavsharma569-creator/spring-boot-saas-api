@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up — LinkShrink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="glow"></div>
+  <div id="navbar"></div>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <span class="label">Get started</span>
+      <h1>Create account</h1>
+      <p class="sub">Free forever. Upgrade anytime for unlimited links.</p>
+
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="submit-btn">Create Account</button>
+      </form>
+
+      <div id="formMessage" class="form-message"></div>
+      <p class="auth-foot">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    // page-specific: wire the form to the shared signupUser() helper
+    document.getElementById('signupForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const msg = document.getElementById('formMessage');
+      const btn = document.querySelector('.submit-btn');
+      btn.disabled = true; btn.textContent = 'Creating...';
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await signupUser(username, password);   // from auth.js
+        if (res.ok) {
+          msg.textContent = 'Account created! Redirecting to login...';
+          msg.className = 'form-message success'; msg.style.display = 'block';
+          setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        } else {
+          throw new Error('Username may already be taken. Try another.');
+        }
+      } catch (err) {
+        msg.textContent = err.message; msg.className = 'form-message error'; msg.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create Account';
+      }
+    });
+  </script>
+</body>
+</html>

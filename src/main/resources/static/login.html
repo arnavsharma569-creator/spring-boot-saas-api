@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in — LinkShrink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="glow"></div>
+  <div id="navbar"></div>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <span class="label">Welcome back</span>
+      <h1>Log in</h1>
+      <p class="sub">Access your dashboard and manage your links.</p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="submit-btn">Log In</button>
+      </form>
+
+      <div id="formMessage" class="form-message"></div>
+      <p class="auth-foot">Don't have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    // page-specific: wire the form to the shared loginUser() helper
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const msg = document.getElementById('formMessage');
+      const btn = document.querySelector('.submit-btn');
+      btn.disabled = true; btn.textContent = 'Logging in...';
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await loginUser(username, password);   // from auth.js — stores token if ok
+        if (res.ok) {
+          msg.textContent = 'Success! Redirecting...';
+          msg.className = 'form-message success'; msg.style.display = 'block';
+          setTimeout(() => { window.location.href = 'index.html'; }, 800);
+        } else {
+          throw new Error('Invalid username or password');
+        }
+      } catch (err) {
+        msg.textContent = err.message; msg.className = 'form-message error'; msg.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Log In';
+      }
+    });
+  </script>
+</body>
+</html>
