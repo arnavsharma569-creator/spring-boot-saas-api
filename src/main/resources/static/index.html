@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkShrink — Shorten your links</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">   <!-- shared stylesheet -->
+</head>
+<body>
+  <div class="glow"></div>
+
+  <!-- navbar injected here by nav.js -->
+  <div id="navbar"></div>
+
+  <section class="hero">
+    <div class="hero-tag">⚡ Fast, simple link shortening</div>
+    <h1>Shrink your links, <span class="accent">track every click</span></h1>
+    <p>Turn long, messy URLs into clean short links. Sign up free, upgrade to Pro for unlimited links and analytics.</p>
+    <div class="btns">
+      <a href="signup.html" class="btn-primary">Get started free</a>
+      <a href="login.html" class="btn-outline">I have an account</a>
+    </div>
+  </section>
+
+  <!-- shared scripts: auth.js first (defines helpers), then nav.js (uses them) -->
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>
