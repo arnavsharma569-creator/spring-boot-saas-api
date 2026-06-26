@@ -51,7 +51,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new CustomUserDetails(user);
     }
-
+            
     public UserInfo checkIfUserAlreadyExist(UserInfoDto dto) {
         return userRepository.findByUsername(dto.getUsername()).orElse(null);
     }
@@ -75,4 +75,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     log.info("Saved user roles: {}", savedUser.getRoles().size());
     return true; 
 }
+
+     
 }
