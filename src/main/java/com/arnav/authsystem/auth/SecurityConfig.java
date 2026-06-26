@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,32 +31,33 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     public SecurityConfig(PasswordEncoder passwordEncoder,
-                          UserDetailsServiceImpl userDetailsServiceImpl) {
+            UserDetailsServiceImpl userDetailsServiceImpl) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   JwtAuthFilter jwtAuthFilter) throws Exception {
+            JwtAuthFilter jwtAuthFilter) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                        "/", "/index.html", "/login.html", "/signup.html",   // your HTML pages
-                        "/css/**", "/js/**",                                   // styles + scripts
-                        "/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup"
-                ).permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .requestMatchers(
+                                "/", "/index.html", "/login.html", "/signup.html", "/dashboard.html",// your HTML pages
+                                "/css/**", "/js/**", // styles + scripts
+                                "/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup")
+                        .permitAll()
+
+                        .requestMatchers("/api/**").authenticated() // create + list = protected
+                        .requestMatchers(HttpMethod.GET, "/r/**").permitAll() // redirect = public
+                        .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
-            
-
+    
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsServiceImpl);
@@ -79,4 +81,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
