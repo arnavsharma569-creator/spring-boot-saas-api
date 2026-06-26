@@ -52,7 +52,7 @@
         if (res.ok) {
           msg.textContent = 'Success! Redirecting...';
           msg.className = 'form-message success'; msg.style.display = 'block';
-          setTimeout(() => { window.location.href = 'index.html'; }, 800);
+          setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
         } else {
           throw new Error('Invalid username or password');
         }

@@ -111,3 +111,91 @@ nav ul li a:hover { color: var(--accent); }
   nav ul { gap: 1rem; }
   nav ul li a { font-size: 0.9rem; }
 }
+
+
+
+/* ============================================================
+   DASHBOARD STYLES  (append these to your existing styles.css)
+   ============================================================ */
+
+   .dash {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 7rem 1.5rem 4rem;
+  }
+  
+  .dash-head { margin-bottom: 2rem; }
+  .dash-title {
+    font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 700; margin: 0.3rem 0;
+  }
+  .dash-sub { color: var(--text-dim); font-size: 1.05rem; }
+  
+  /* ---- create-link card ---- */
+  .create-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.8rem;
+    margin-bottom: 2.5rem;
+  }
+  .create-label {
+    display: block; font-weight: 500; margin-bottom: 0.8rem; font-size: 0.95rem;
+  }
+  .create-row { display: flex; gap: 0.8rem; }
+  .create-row input {
+    flex: 1; padding: 0.9rem 1rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 1rem;
+    font-family: 'DM Sans', sans-serif; transition: border-color 0.3s;
+  }
+  .create-row input:focus { outline: none; border-color: var(--accent); }
+  .create-row .btn-primary { white-space: nowrap; }
+  
+  /* ---- links list header ---- */
+  .links-head {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;
+  }
+  .links-head h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 600; }
+  
+  .btn-sm { padding: 0.5rem 1.1rem !important; font-size: 0.9rem; }
+  
+  /* ---- individual link card ---- */
+  .link-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 0.9rem;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    transition: border-color 0.3s;
+  }
+  .link-card:hover { border-color: var(--accent); }
+  
+  .link-info { display: flex; flex-direction: column; gap: 0.3rem; overflow: hidden; }
+  .short-url {
+    color: var(--accent); font-weight: 600; text-decoration: none; font-size: 1.05rem;
+  }
+  .short-url:hover { text-decoration: underline; }
+  .long-url {
+    color: var(--text-dim); font-size: 0.88rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px;
+  }
+  
+  .link-meta { display: flex; align-items: center; gap: 1rem; white-space: nowrap; }
+  .clicks {
+    background: rgba(6,182,212,0.12); color: var(--accent);
+    padding: 0.35rem 0.8rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+  }
+  
+  .empty-state {
+    text-align: center; color: var(--text-dim);
+    padding: 2.5rem 1rem; font-size: 1rem;
+  }
+  
+  /* ---- responsive ---- */
+  @media (max-width: 640px) {
+    .create-row { flex-direction: column; }
+    .link-card { flex-direction: column; align-items: flex-start; }
+    .long-url { max-width: 100%; }
+    .link-meta { width: 100%; justify-content: space-between; }
+  }
