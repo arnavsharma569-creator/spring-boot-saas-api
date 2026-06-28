@@ -26,12 +26,22 @@ public class ShortUrlController {
     // ---- CREATE a short link (PROTECTED — needs JWT) ----
     // POST /api/shorten body: { "longUrl": "https://..." }
     @PostMapping("/api/shorten")
-    public ResponseEntity<ShortUrl> shorten(@RequestBody Map<String, String> body,
+    public ResponseEntity<?> shorten(@RequestBody Map<String, String> body,
             Authentication authentication) {
         String longUrl = body.get("longUrl");
-        String owner = authentication.getName(); // username from the JWT (set by JwtAuthFilter)
-        ShortUrl created = shortUrlService.createShortUrl(longUrl, owner);
-        return ResponseEntity.ok(created);
+        String owner = authentication.getName();
+        try {
+            ShortUrl created = shortUrlService.createShortUrl(longUrl, owner);
+            return ResponseEntity.ok(created);
+        } catch (RuntimeException e) {
+            if ("FREE_LIMIT_REACHED".equals(e.getMessage())) {
+                // 403 + a message the frontend can detect
+                return ResponseEntity.status(403)
+                        .body(Map.of("error", "FREE_LIMIT_REACHED",
+                                "message", "Free plan limit reached. Upgrade to Pro for unlimited links."));
+            }
+            throw e; // other errors bubble up normally
+        }
     }
 
     // ---- LIST my links (PROTECTED — for the dashboard) ----
@@ -43,12 +53,12 @@ public class ShortUrlController {
     }
 
     // ---- REDIRECT (PUBLIC — anyone clicking a short link) ----
-// GET /r/{shortCode}  -> 302 redirect to the long URL
-@GetMapping("/r/{shortCode}")
-public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
-    String longUrl = shortUrlService.resolveAndCount(shortCode);
-    return ResponseEntity.status(302)
-            .location(URI.create(longUrl))   // tells the browser "go here instead"
-            .build();
-}
+    // GET /r/{shortCode} -> 302 redirect to the long URL
+    @GetMapping("/r/{shortCode}")
+    public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
+        String longUrl = shortUrlService.resolveAndCount(shortCode);
+        return ResponseEntity.status(302)
+                .location(URI.create(longUrl)) // tells the browser "go here instead"
+                .build();
     }
+}
