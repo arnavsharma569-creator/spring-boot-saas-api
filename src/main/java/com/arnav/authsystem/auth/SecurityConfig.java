@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/index.html", "/login.html", "/signup.html", "/dashboard.html",// your HTML pages
+                                "/", "/index.html", "/login.html", "/signup.html", "/dashboard.html","/upgrade.html",// your HTML pages
                                 "/css/**", "/js/**", // styles + scripts
                                 "/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup")
                         .permitAll()
