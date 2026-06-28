@@ -30,12 +30,12 @@ public class UserInfo {
 
     private String password;
 
+    // billing tier: "FREE" by default, becomes "PAID" after Stripe payment
+    @Column(nullable = false)
+    private String tier = "FREE";
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<UserRole> roles = new HashSet<>();
 
 }
