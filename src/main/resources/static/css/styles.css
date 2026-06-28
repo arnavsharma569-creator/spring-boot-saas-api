@@ -199,3 +199,12 @@ nav ul li a:hover { color: var(--accent); }
     .long-url { max-width: 100%; }
     .link-meta { width: 100%; justify-content: space-between; }
   }
+
+
+
+
+  /* ----link to upgrade page---- */
+  .upgrade-link {
+    color: var(--accent); font-weight: 600; text-decoration: none; margin-left: 0.4rem;
+  }
+  .upgrade-link:hover { text-decoration: underline; }

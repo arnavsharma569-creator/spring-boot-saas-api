@@ -1,108 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — LinkShrink</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — LinkShrink</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
-  <div class="glow"></div>
-  <div id="navbar"></div>
+    <div class="glow"></div>
+    <div id="navbar"></div>
 
-  <main class="dash">
-    <!-- header -->
-    <div class="dash-head">
-      <span class="section-label">Your workspace</span>
-      <h1 class="dash-title">Dashboard</h1>
-      <p class="dash-sub">Create short links and track every click.</p>
-    </div>
+    <main class="dash">
+        <!-- header -->
+        <div class="dash-head">
+            <span class="section-label">Your workspace</span>
+            <h1 class="dash-title">Dashboard</h1>
+            <p class="dash-sub">Create short links and track every click.</p>
+        </div>
 
-    <!-- create-link card -->
-    <div class="create-card">
-      <label for="longUrl" class="create-label">Paste a long URL</label>
-      <div class="create-row">
-        <input type="url" id="longUrl" placeholder="https://example.com/very/long/link..." />
-        <button id="shortenBtn" class="btn-primary">Shorten</button>
-      </div>
-      <div id="createMsg" class="form-message"></div>
-    </div>
+        <!-- create-link card -->
+        <div class="create-card">
+            <label for="longUrl" class="create-label">Paste a long URL</label>
+            <div class="create-row">
+                <input type="url" id="longUrl" placeholder="https://example.com/very/long/link..." />
+                <button id="shortenBtn" class="btn-primary">Shorten</button>
+            </div>
+            <div id="createMsg" class="form-message"></div>
+        </div>
 
-    <!-- links list -->
-    <div class="links-head">
-      <h2>Your links</h2>
-      <button id="refreshBtn" class="btn-outline btn-sm">Refresh</button>
-    </div>
+        <!-- links list -->
+        <div class="links-head">
+            <h2>Your links</h2>
+            <button id="refreshBtn" class="btn-outline btn-sm">Refresh</button>
+        </div>
 
-    <div id="linksContainer">
-      <p class="empty-state" id="emptyState">Loading your links...</p>
-      <!-- link cards injected here by JS -->
-    </div>
-  </main>
+        <div id="linksContainer">
+            <p class="empty-state" id="emptyState">Loading your links...</p>
+            <!-- link cards injected here by JS -->
+        </div>
+    </main>
 
-  <script src="js/auth.js"></script>
-  <script src="js/nav.js"></script>
-  <script>
-    // ===== guard: must be logged in =====
-    if (!isLoggedIn()) {
-      window.location.href = 'login.html';
-    }
-
-    const BASE = API_BASE;   // from auth.js (http://localhost:8080)
-
-    // ---- CREATE a short link ----
-    document.getElementById('shortenBtn').addEventListener('click', async () => {
-      const input = document.getElementById('longUrl');
-      const msg = document.getElementById('createMsg');
-      const btn = document.getElementById('shortenBtn');
-      const longUrl = input.value.trim();
-
-      if (!longUrl) {
-        showMsg(msg, 'Please paste a URL first.', 'error');
-        return;
-      }
-
-      btn.disabled = true; btn.textContent = 'Shortening...';
-      try {
-        // fetchProtected attaches the JWT automatically (from auth.js)
-        const res = await fetchProtected('/api/shorten', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ longUrl })
-        });
-
-        if (res.ok) {
-          input.value = '';
-          showMsg(msg, 'Short link created!', 'success');
-          loadLinks();   // refresh the list
-        } else if (res.status === 401) {
-          window.location.href = 'login.html';   // token expired
-        } else {
-          throw new Error('Could not create link');
-        }
-      } catch (err) {
-        showMsg(msg, err.message, 'error');
-      } finally {
-        btn.disabled = false; btn.textContent = 'Shorten';
-      }
-    });
-
-    // ---- LOAD your links ----
-    async function loadLinks() {
-      const container = document.getElementById('linksContainer');
-      try {
-        const res = await fetchProtected('/api/my-links');
-        if (res.status === 401) { window.location.href = 'login.html'; return; }
-        const links = await res.json();
-
-        if (!links.length) {
-          container.innerHTML = `<p class="empty-state">No links yet — paste a URL above to create your first one.</p>`;
-          return;
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script>
+        // ===== guard: must be logged in =====
+        if (!isLoggedIn()) {
+            window.location.href = 'login.html';
         }
 
-        // build a card for each link
-        container.innerHTML = links.map(link => `
+        const BASE = API_BASE;   // from auth.js (http://localhost:8080)
+
+        // ---- CREATE a short link ----
+       // ---- CREATE a short link ----
+       document.getElementById('shortenBtn').addEventListener('click', async () => {
+            const input = document.getElementById('longUrl');
+            const msg = document.getElementById('createMsg');
+            const btn = document.getElementById('shortenBtn');
+            const longUrl = input.value.trim();
+
+            if (!longUrl) {
+                showMsg(msg, 'Please paste a URL first.', 'error');
+                return;
+            }
+
+            btn.disabled = true; 
+            btn.textContent = 'Shortening...';
+            
+            try {
+                // fetchProtected attaches the JWT automatically (from auth.js)
+                const res = await fetchProtected('/api/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ longUrl })
+                });
+                console.log('SHORTEN STATUS:', res.status);   //for debugging
+                if (res.ok) {
+                    input.value = '';
+                    showMsg(msg, 'Short link created!', 'success');
+                    loadLinks();
+                } else if (res.status === 401) {
+                    showMsg(msg, 'Session expired. Redirecting to login...', 'error');
+                    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                } else if (res.status === 403) {
+                    const data = await res.json().catch(() => ({}));
+                    if (data.error === 'FREE_LIMIT_REACHED') {
+                        // show upgrade prompt with a button
+                        msg.innerHTML = `${data.message} <a href="upgrade.html" class="upgrade-link">Upgrade now →</a>`;
+                        msg.className = 'form-message error';
+                        msg.style.display = 'block';
+                    } else {
+                        showMsg(msg, 'Session expired. Redirecting...', 'error');
+                        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                    }
+                } else {
+                    showMsg(msg, 'Could not create link', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showMsg(msg, 'Network error. Please try again.', 'error');
+            } finally {
+                // Re-enable the button regardless of success or failure
+                btn.disabled = false; 
+                btn.textContent = 'Shorten';
+            }
+        }); //
+
+        // ---- LOAD your links ----
+        async function loadLinks() {
+            const container = document.getElementById('linksContainer');
+            try {
+                const res = await fetchProtected('/api/my-links');
+                if (res.status === 401  || res.status === 403) { window.location.href = 'login.html'; return; }
+                const links = await res.json();
+
+                if (!links.length) {
+                    container.innerHTML = `<p class="empty-state">No links yet — paste a URL above to create your first one.</p>`;
+                    return;
+                }
+
+                // build a card for each link
+                container.innerHTML = links.map(link => `
           <div class="link-card">
             <div class="link-info">
               <a class="short-url" href="${BASE}/r/${link.shortCode}" target="_blank">${BASE}/r/${link.shortCode}</a>
@@ -115,30 +137,31 @@
           </div>
         `).join('');
 
-        // wire up copy buttons
-        document.querySelectorAll('.copy-btn').forEach(b => {
-          b.addEventListener('click', () => {
-            navigator.clipboard.writeText(b.dataset.url);
-            b.textContent = 'Copied!';
-            setTimeout(() => { b.textContent = 'Copy'; }, 1500);
-          });
-        });
-      } catch (err) {
-        container.innerHTML = `<p class="empty-state">Couldn't load links. Try refreshing.</p>`;
-      }
-    }
+                // wire up copy buttons
+                document.querySelectorAll('.copy-btn').forEach(b => {
+                    b.addEventListener('click', () => {
+                        navigator.clipboard.writeText(b.dataset.url);
+                        b.textContent = 'Copied!';
+                        setTimeout(() => { b.textContent = 'Copy'; }, 1500);
+                    });
+                });
+            } catch (err) {
+                container.innerHTML = `<p class="empty-state">Couldn't load links. Try refreshing.</p>`;
+            }
+        }
 
-    function showMsg(el, text, type) {
-      el.textContent = text;
-      el.className = 'form-message ' + type;
-      el.style.display = 'block';
-      setTimeout(() => { el.style.display = 'none'; }, 3000);
-    }
+        function showMsg(el, text, type) {
+            el.textContent = text;
+            el.className = 'form-message ' + type;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 3000);
+        }
 
-    document.getElementById('refreshBtn').addEventListener('click', loadLinks);
+        document.getElementById('refreshBtn').addEventListener('click', loadLinks);
 
-    // load on page open
-    loadLinks();
-  </script>
+        // load on page open
+        loadLinks();
+    </script>
 </body>
+
 </html>
