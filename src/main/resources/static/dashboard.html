@@ -53,11 +53,38 @@
             window.location.href = 'login.html';
         }
 
+
+
+        
+
+            // ===== PASTE checkUpgradeReturn HERE =====
+            (async function checkUpgradeReturn() {
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('upgraded') === 'true' && params.get('session_id')) {
+                    try {
+                        const res = await fetchProtected('/api/confirm-upgrade', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ sessionId: params.get('session_id') })
+                        });
+                        if (res.ok) {
+                            alert('🎉 Upgraded to Pro! You now have unlimited links.');
+                            window.history.replaceState({}, '', 'dashboard.html');
+                        } else {
+                            const data = await res.json().catch(() => ({}));
+                            console.error('Upgrade failed:', data);
+                        }
+                    } catch (e) { console.error('Upgrade error:', e); }
+                }
+            })();
+
+
+
         const BASE = API_BASE;   // from auth.js (http://localhost:8080)
 
         // ---- CREATE a short link ----
-       // ---- CREATE a short link ----
-       document.getElementById('shortenBtn').addEventListener('click', async () => {
+        // ---- CREATE a short link ----
+        document.getElementById('shortenBtn').addEventListener('click', async () => {
             const input = document.getElementById('longUrl');
             const msg = document.getElementById('createMsg');
             const btn = document.getElementById('shortenBtn');
@@ -68,9 +95,9 @@
                 return;
             }
 
-            btn.disabled = true; 
+            btn.disabled = true;
             btn.textContent = 'Shortening...';
-            
+
             try {
                 // fetchProtected attaches the JWT automatically (from auth.js)
                 const res = await fetchProtected('/api/shorten', {
@@ -105,7 +132,7 @@
                 showMsg(msg, 'Network error. Please try again.', 'error');
             } finally {
                 // Re-enable the button regardless of success or failure
-                btn.disabled = false; 
+                btn.disabled = false;
                 btn.textContent = 'Shorten';
             }
         }); //
@@ -115,7 +142,7 @@
             const container = document.getElementById('linksContainer');
             try {
                 const res = await fetchProtected('/api/my-links');
-                if (res.status === 401  || res.status === 403) { window.location.href = 'login.html'; return; }
+                if (res.status === 401 || res.status === 403) { window.location.href = 'login.html'; return; }
                 const links = await res.json();
 
                 if (!links.length) {

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upgrade — LinkShrink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="glow"></div>
+  <div id="navbar"></div>
+
+  <main class="dash" style="max-width: 560px;">
+    <div class="dash-head" style="text-align:center;">
+      <span class="section-label">Pricing</span>
+      <h1 class="dash-title">Upgrade to Pro</h1>
+      <p class="dash-sub">Unlock unlimited links and remove the free-tier cap.</p>
+    </div>
+
+    <!-- pricing card -->
+    <div class="create-card" style="text-align:center;">
+      <div class="price-tag">$9<span class="price-period">/month</span></div>
+      <ul class="price-features">
+        <li>Unlimited short links</li>
+        <li>Click tracking on every link</li>
+        <li>Priority support</li>
+      </ul>
+      <button id="upgradeBtn" class="btn-primary" style="width:100%; margin-top:1rem;">
+        Upgrade to Pro
+      </button>
+      <div id="upgradeMsg" class="form-message"></div>
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    // guard: must be logged in
+    if (!isLoggedIn()) { window.location.href = 'login.html'; }
+
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    const upgradeMsg = document.getElementById('upgradeMsg');
+
+    // ---- click Upgrade -> create checkout session -> redirect to Stripe ----
+    upgradeBtn.addEventListener('click', async () => {
+      upgradeBtn.disabled = true;
+      upgradeBtn.textContent = 'Redirecting to checkout...';
+      try {
+        const res = await fetchProtected('/api/create-checkout-session', { method: 'POST' });
+        if (res.status === 401 || res.status === 403) { window.location.href = 'login.html'; return; }
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;   // go to Stripe's hosted checkout
+        } else {
+          throw new Error(data.error || 'Could not start checkout');
+        }
+      } catch (err) {
+        upgradeMsg.textContent = err.message;
+        upgradeMsg.className = 'form-message error';
+        upgradeMsg.style.display = 'block';
+        upgradeBtn.disabled = false;
+        upgradeBtn.textContent = 'Upgrade to Pro';
+      }
+    });
+  </script>
+</body>
+</html>

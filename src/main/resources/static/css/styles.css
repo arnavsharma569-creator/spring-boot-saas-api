@@ -201,10 +201,38 @@ nav ul li a:hover { color: var(--accent); }
   }
 
 
-
-
-  /* ----link to upgrade page---- */
+/* ----link to upgrade page---- */
   .upgrade-link {
     color: var(--accent); font-weight: 600; text-decoration: none; margin-left: 0.4rem;
   }
   .upgrade-link:hover { text-decoration: underline; }
+
+
+
+
+  /* ============================================================
+   UPGRADE PAGE STYLES  (append to styles.css)
+   ============================================================ */
+.price-tag {
+  font-family: 'Syne', sans-serif;
+  font-size: 3rem; font-weight: 700; color: var(--accent);
+  margin: 0.5rem 0;
+}
+.price-period { font-size: 1.1rem; color: var(--text-dim); font-weight: 400; }
+
+.price-features {
+  list-style: none; padding: 0; margin: 1.5rem 0;
+  text-align: left; display: inline-block;
+}
+.price-features li {
+  padding: 0.5rem 0 0.5rem 1.8rem; position: relative; color: var(--text);
+}
+.price-features li::before {
+  content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700;
+}
+
+/* the upgrade link shown on the dashboard when limit is hit */
+.upgrade-link {
+  color: var(--accent); font-weight: 600; text-decoration: none; margin-left: 0.4rem;
+}
+.upgrade-link:hover { text-decoration: underline; }
