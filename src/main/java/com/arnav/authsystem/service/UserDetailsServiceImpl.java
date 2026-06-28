@@ -71,7 +71,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     roles.add(userRole);
     log.info("Roles set size: {}", roles.size()); // ADD THIS
     dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-    UserInfo savedUser= userRepository.save(new UserInfo(userId, dto.getUsername(), dto.getPassword(), roles));
+    UserInfo savedUser= userRepository.save(new UserInfo(userId, dto.getUsername(), dto.getPassword(),"FREE", roles));
     log.info("Saved user roles: {}", savedUser.getRoles().size());
     return true; 
 }
