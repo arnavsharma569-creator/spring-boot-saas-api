@@ -32,8 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-### Secrets ###
-src/main/resources/application.properties
 
 ### OS ###
 .DS_Store
