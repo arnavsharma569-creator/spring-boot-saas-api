@@ -4,7 +4,7 @@
 // ============================================================
 
 // Base URL of your Spring Boot backend. Change to your deployed URL later.
-const API_BASE = "http://localhost:8080";
+const API_BASE = '';
 
 // ---- token helpers (the JWT lives in the browser's localStorage) ----
 

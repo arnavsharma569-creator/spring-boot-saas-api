@@ -44,7 +44,9 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/index.html", "/login.html", "/signup.html", "/dashboard.html","/upgrade.html",// your HTML pages
+                                "/", "/index.html", "/login.html", "/signup.html", "/dashboard.html", "/upgrade.html", // your
+                                                                                                                       // HTML
+                                                                                                                       // pages
                                 "/css/**", "/js/**", // styles + scripts
                                 "/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup")
                         .permitAll()
@@ -57,7 +59,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
-    
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsServiceImpl);
@@ -73,9 +75,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedOriginPatterns(List.of("*")); // use AllowedOriginPatterns not AllowedOrigins
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
