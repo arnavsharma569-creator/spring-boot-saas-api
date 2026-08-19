@@ -18,13 +18,17 @@ import com.arnav.authsystem.entities.UserRole;
 import com.arnav.authsystem.repository.RoleRepository;
 import com.arnav.authsystem.repository.UserRepository;
 
+import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sns.model.PublishRequest;
+import software.amazon.awssdk.regions.Region;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-
+    @org.springframework.beans.factory.annotation.Value("${sns.topic.arn:}")
+    private String snsTopicArn;
     private static final Logger log =
             LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
@@ -73,6 +77,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     dto.setPassword(passwordEncoder.encode(dto.getPassword()));
     UserInfo savedUser= userRepository.save(new UserInfo(userId, dto.getUsername(), dto.getPassword(),"FREE", roles));
     log.info("Saved user roles: {}", savedUser.getRoles().size());
+    // Publish signup event to SNS
+    try {
+        if (snsTopicArn != null && !snsTopicArn.isBlank()) {
+            SnsClient snsClient = SnsClient.builder()
+                    .region(Region.AP_SOUTHEAST_2)
+                    .build();
+            PublishRequest publishRequest = PublishRequest.builder()
+                    .topicArn(snsTopicArn)
+                    .message("New user signed up: " + dto.getUsername())
+                    .subject("LinkShrink - New Signup")
+                    .build();
+            snsClient.publish(publishRequest);
+            snsClient.close();
+            log.info("SNS notification published for new user: {}", dto.getUsername());
+        }
+    } catch (Exception e) {
+        log.error("Failed to publish SNS notification", e);
+        // don't fail signup if SNS publish fails
+    }
+
+    
     return true; 
 }
 
