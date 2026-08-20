@@ -8,7 +8,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- <link rel="stylesheet" href="css/styles.css"> -->
+    <link rel="stylesheet" href="https://d2c3wbw9fr9jgq.cloudfront.net/static/styles.css">
 </head>
 
 <body>
@@ -16,14 +17,12 @@
     <div id="navbar"></div>
 
     <main class="dash">
-        <!-- header -->
         <div class="dash-head">
             <span class="section-label">Your workspace</span>
             <h1 class="dash-title">Dashboard</h1>
             <p class="dash-sub">Create short links and track every click.</p>
         </div>
 
-        <!-- create-link card -->
         <div class="create-card">
             <label for="longUrl" class="create-label">Paste a long URL</label>
             <div class="create-row">
@@ -33,7 +32,6 @@
             <div id="createMsg" class="form-message"></div>
         </div>
 
-        <!-- links list -->
         <div class="links-head">
             <h2>Your links</h2>
             <button id="refreshBtn" class="btn-outline btn-sm">Refresh</button>
@@ -41,71 +39,57 @@
 
         <div id="linksContainer">
             <p class="empty-state" id="emptyState">Loading your links...</p>
-            <!-- link cards injected here by JS -->
         </div>
     </main>
 
-    <script src="js/auth.js"></script>
-    <script src="js/nav.js"></script>
+    <!-- <script src="js/auth.js"></script> -->
+    <!-- <script src="js/nav.js"></script> -->
+    <script src="https://d2c3wbw9fr9jgq.cloudfront.net/static/auth.js"></script>
+    <script src="https://d2c3wbw9fr9jgq.cloudfront.net/static/nav.js"></script>
     <script>
-        // ===== guard: must be logged in =====
         if (!isLoggedIn()) {
             window.location.href = 'login.html';
         }
 
+        (async function checkUpgradeReturn() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('upgraded') === 'true' && params.get('session_id')) {
+                try {
+                    const res = await fetchProtected('/api/confirm-upgrade', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sessionId: params.get('session_id') })
+                    });
+                    if (res.ok) {
+                        alert('🎉 Upgraded to Pro! You now have unlimited links.');
+                        window.history.replaceState({}, '', 'dashboard.html');
+                    } else {
+                        const data = await res.json().catch(() => ({}));
+                        console.error('Upgrade failed:', data);
+                    }
+                } catch (e) { console.error('Upgrade error:', e); }
+            }
+        })();
 
+        const BASE = API_BASE;
 
-        
-
-            // ===== PASTE checkUpgradeReturn HERE =====
-            (async function checkUpgradeReturn() {
-                const params = new URLSearchParams(window.location.search);
-                if (params.get('upgraded') === 'true' && params.get('session_id')) {
-                    try {
-                        const res = await fetchProtected('/api/confirm-upgrade', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ sessionId: params.get('session_id') })
-                        });
-                        if (res.ok) {
-                            alert('🎉 Upgraded to Pro! You now have unlimited links.');
-                            window.history.replaceState({}, '', 'dashboard.html');
-                        } else {
-                            const data = await res.json().catch(() => ({}));
-                            console.error('Upgrade failed:', data);
-                        }
-                    } catch (e) { console.error('Upgrade error:', e); }
-                }
-            })();
-
-
-
-        const BASE = API_BASE;   // from auth.js (http://localhost:8080)
-
-        // ---- CREATE a short link ----
-        // ---- CREATE a short link ----
         document.getElementById('shortenBtn').addEventListener('click', async () => {
             const input = document.getElementById('longUrl');
             const msg = document.getElementById('createMsg');
             const btn = document.getElementById('shortenBtn');
             const longUrl = input.value.trim();
 
-            if (!longUrl) {
-                showMsg(msg, 'Please paste a URL first.', 'error');
-                return;
-            }
+            if (!longUrl) { showMsg(msg, 'Please paste a URL first.', 'error'); return; }
 
             btn.disabled = true;
             btn.textContent = 'Shortening...';
 
             try {
-                // fetchProtected attaches the JWT automatically (from auth.js)
                 const res = await fetchProtected('/api/shorten', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ longUrl })
                 });
-                console.log('SHORTEN STATUS:', res.status);   //for debugging
                 if (res.ok) {
                     input.value = '';
                     showMsg(msg, 'Short link created!', 'success');
@@ -116,7 +100,6 @@
                 } else if (res.status === 403) {
                     const data = await res.json().catch(() => ({}));
                     if (data.error === 'FREE_LIMIT_REACHED') {
-                        // show upgrade prompt with a button
                         msg.innerHTML = `${data.message} <a href="upgrade.html" class="upgrade-link">Upgrade now →</a>`;
                         msg.className = 'form-message error';
                         msg.style.display = 'block';
@@ -128,16 +111,13 @@
                     showMsg(msg, 'Could not create link', 'error');
                 }
             } catch (err) {
-                console.error(err);
                 showMsg(msg, 'Network error. Please try again.', 'error');
             } finally {
-                // Re-enable the button regardless of success or failure
                 btn.disabled = false;
                 btn.textContent = 'Shorten';
             }
-        }); //
+        });
 
-        // ---- LOAD your links ----
         async function loadLinks() {
             const container = document.getElementById('linksContainer');
             try {
@@ -150,7 +130,6 @@
                     return;
                 }
 
-                // build a card for each link
                 container.innerHTML = links.map(link => `
           <div class="link-card">
             <div class="link-info">
@@ -164,7 +143,6 @@
           </div>
         `).join('');
 
-                // wire up copy buttons
                 document.querySelectorAll('.copy-btn').forEach(b => {
                     b.addEventListener('click', () => {
                         navigator.clipboard.writeText(b.dataset.url);
@@ -185,8 +163,6 @@
         }
 
         document.getElementById('refreshBtn').addEventListener('click', loadLinks);
-
-        // load on page open
         loadLinks();
     </script>
 </body>
